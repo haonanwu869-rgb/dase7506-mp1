@@ -2,7 +2,7 @@
 
 ## Final frozen submission
 
-The final checkpoint bundle is runs/final-submission/. It contains the depth-10 hybrid predictor and scored 1.524677 BPB on the full test split with CPU FP32. Its selected validation BPB is 1.506880. The checkpoint SHA256 is 7382455e5313495cd186f6773ad4eba6e313acf89773495650cd6999079129d1; the final test run took 40.108 seconds. Depth-10 preflight measured a maximum working set of 1,801,285,632 bytes (1.68 GiB), below the 4 GiB limit. The bundle is 57.52 MiB including the checkpoint and model code, below the 64 MiB limit. Run from the code directory: python evaluate.py --checkpoint runs/final-submission/checkpoint.pt --split test --device cpu --precision fp32 --threads 3.
+The final checkpoint bundle is runs/final-submission/. It contains the depth-10 hybrid predictor and scored 1.52468 BPB on the full test split with CPU FP32. Its selected validation BPB is 1.506880. The checkpoint SHA256 is 7382455e5313495cd186f6773ad4eba6e313acf89773495650cd6999079129d1; the final test run took 40.108 seconds. Depth-10 preflight measured a maximum working set of 1,801,285,632 bytes (1.68 GiB), below the 4 GiB limit. The bundle is 57.52 MiB including the checkpoint and model code, below the 64 MiB limit. Run from the code directory: python evaluate.py --checkpoint runs/final-submission/checkpoint.pt --split test --device cpu --precision fp32 --threads 3.
 
 ## 2026-09-29 paired depth continuation
 
@@ -37,7 +37,7 @@ Equal targets do not imply equal compute: the deeper network costs more per step
 Eighteen engineering checks passed before the run. All prior checkpoints,
 data/tokenizer and evaluator remain protected by hashes in `runs/depth_audit/`.
 Actual commands, exit codes and wall times are recorded in `commands.json`;
-training logs are named train_depth{depth}_step{boundary}.log. The paired run selected the depth-10 EMA checkpoint at step 1000: validation BPB 1.506879794. The frozen test-scored copy is runs/final-submission/, with test BPB 1.524677172. The adaptive checkpoint below is the starting point for this depth experiment, not the final submission.
+training logs are named train_depth{depth}_step{boundary}.log. The paired run selected the depth-10 EMA checkpoint at step 1000: validation BPB 1.506879794. The frozen test-scored copy is runs/final-submission/, with test BPB 1.52468. The adaptive checkpoint below is the starting point for this depth experiment, not the final submission.
 
 ```powershell
 .\.venv\Scripts\python.exe prepare_depth.py

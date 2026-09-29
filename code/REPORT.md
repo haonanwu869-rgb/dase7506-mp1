@@ -8,7 +8,7 @@
 
 ## 1. Summary
 
-Starting from the provided 4-layer GPT-2 baseline (test BPB ≈ 2.10), we reduce test BPB to **1.525** on WikiText-2 (BPE-2048, independent 256-token causal windows, FP32 CPU evaluation). The final model is a two-component system:
+Starting from the provided 4-layer GPT-2 baseline (test BPB ≈ 2.10), we reduce test BPB to **1.52468** on WikiText-2 (BPE-2048, independent 256-token causal windows, FP32 CPU evaluation). The final model is a two-component system:
 
 1. A 10-layer SwiGLU transformer with RoPE, RMSNorm, and weight tying, trained from scratch on the supplied training text (4.82 M neural parameters).
 2. A train-derived Kneser–Ney n-gram model (orders 2–10) combined with a recency cache and a copy mechanism, interpolated with the neural distribution at inference time.
@@ -18,7 +18,7 @@ All statistical tables are fit **only on the supplied training split**; all hype
 | Model | val BPB | test BPB |
 |---|---:|---:|
 | Baseline (provided) | 2.071 | ~2.10 |
-| **Final submission** | **1.507** | **1.525** |
+| **Final submission** | **1.507** | **1.52468** |
 
 ---
 
@@ -74,7 +74,7 @@ All numbers are validation BPB on the same WikiText-2 validation split (376,599 
 | 7 | + grid search of gating weights (12 candidates) | same | same | 1.508 | −0.000 |
 | 8 | + expand neural to depth 10, fine-tune 1000 steps, EMA selected | 4.82 M + 41 MB tables | 54.1 M cumulative | **1.507** | −0.001 |
 
-**Test BPB of the frozen bundle (#8): 1.525** (validation 1.507; generalization gap 0.018).
+**Test BPB of the frozen bundle (#8): 1.52468** (validation 1.507; generalization gap 0.018).
 
 ### 3.1 Paired comparison: depth 8 vs depth 10
 
@@ -126,7 +126,7 @@ Among neural changes, **RoPE** was the most valuable single modification (−0.1
 - Grid search over mixture weights after the initial fit changed BPB by less than 0.002.
 - Depth 8 vs 10 was a wash (0.0002 difference).
 
-The final depth-10 checkpoint reaches validation BPB 1.506880 and test BPB 1.524677. The adaptive-mixture selection used 12 declared validation configurations; its selection process took 70.7 seconds, with a separate original-scorer/resource verification process of 392.4 seconds. Training and search run details, including earlier stages and the paired depth experiment, are recorded in the README and runs audit files.
+The final depth-10 checkpoint reaches validation BPB 1.506880 and test BPB 1.52468. The adaptive-mixture selection used 12 declared validation configurations; its selection process took 70.7 seconds, with a separate original-scorer/resource verification process of 392.4 seconds. Training and search run details, including earlier stages and the paired depth experiment, are recorded in the README and runs audit files.
 
 ### 5.3 Trade-offs
 
@@ -136,7 +136,7 @@ The final depth-10 checkpoint reaches validation BPB 1.506880 and test BPB 1.524
 
 ### 5.4 Why we did not reach lower
 
-A ~1.5 BPB result is near the practical floor for this setup. Reaching 1.3 would require either (a) a much larger neural model, which the 64 MB asset ceiling forbids once n-gram tables are included, or (b) test-time tricks that the fixed evaluator disallows. We consider 1.525 a strong result for a 4.8 M parameter CPU-only model.
+A ~1.5 BPB result is near the practical floor for this setup. Reaching 1.3 would require either (a) a much larger neural model, which the 64 MB asset ceiling forbids once n-gram tables are included, or (b) test-time tricks that the fixed evaluator disallows. We consider 1.52468 a strong result for a 4.8 M parameter CPU-only model.
 
 ---
 
