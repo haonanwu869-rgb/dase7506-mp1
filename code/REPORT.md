@@ -54,7 +54,7 @@ At inference the two components are blended per-token: the neural log-probabilit
 - **Optimizer**: AdamW (lr = 1e-3 for neural-only runs, 5e-5 for the final continuation; weight decay 0.1, grad clip 1.0).
 - **Schedule**: linear warmup (100 steps, or 50 steps for the fine-tuning phase) followed by cosine decay to 10% of peak.
 - **EMA**: exponential moving average of neural weights with decay 0.99; the EMA weights are selected at the end.
-- The neural backbone was trained in stages: first from scratch to 4000 steps at width 128/depth 6, then expanded to width 192/depth 8 and trained to 4000 steps, then expanded to depth 10 and fine-tuned for 1000 steps at low LR. Total neural training: ~47 M tokens, ~5.8 hours of CPU compute.
+- The neural backbone was trained in stages: first from scratch to 4000 steps at width 128/depth 6, then expanded to width 192/depth 8 and trained to 4000 steps, then expanded to depth 10 and fine-tuned for 1000 steps at low LR. The final checkpoint records 54,067,200 cumulative neural training targets (45,875,200 inherited plus 8,192,000 in the depth-10 stage) and 22,095 seconds (6.14 hours) cumulative neural training time. The paired depth experiment trained both branches on equal targets; only the selected depth-10 branch contributes to final checkpoint ancestry.
 
 ---
 
@@ -72,7 +72,7 @@ All numbers are validation BPB on the same WikiText-2 validation split (376,599 
 | 5 | Wider/deeper: width 192, heads 6, depth 8, dropout 0.1, 4000 steps | 3.94 M | 32.8 M | 1.612 | −0.065 |
 | 6 | + Kneser–Ney n-gram (orders 2–10) + cache + copy | 3.94 M + 41 MB tables | 45.9 M | 1.508 | **−0.104** |
 | 7 | + grid search of gating weights (12 candidates) | same | same | 1.508 | −0.000 |
-| 8 | + expand neural to depth 10, fine-tune 1000 steps, EMA selected | 4.82 M + 41 MB tables | 47.2 M | **1.507** | −0.001 |
+| 8 | + expand neural to depth 10, fine-tune 1000 steps, EMA selected | 4.82 M + 41 MB tables | 54.1 M cumulative | **1.507** | −0.001 |
 
 **Test BPB of the frozen bundle (#8): 1.525** (validation 1.507; generalization gap 0.018).
 
@@ -103,12 +103,12 @@ Measured on the submission machine (4-thread CPU, torch 2.7.1+cpu, FP32):
 
 | Metric | Value | Limit |
 |---|---:|---:|
-| Test scoring time | 40.1 s | ≤ 5× baseline (≈ 78 s on this machine) |
-| Peak evaluation RAM | 1.4 GB | ≤ 4 GiB |
-| Inference assets (checkpoint + code) | 60.3 MB | ≤ 64 MiB |
+| Test scoring time | 40.108 s | ≤ 5× baseline (≈ 78 s on this machine) |
+| Peak evaluation RAM (depth-10 preflight) | 1.80 GB | ≤ 4 GiB |
+| Inference assets (checkpoint + code) | 60,310,478 bytes (57.52 MiB) | ≤ 64 MiB |
 | Parameters | 4.82 M neural + sparse n-gram tables | — |
 
-The n-gram tables consume ~41 MB of the 64 MB budget; the neural weights are ~19 MB. The system is **asset-bound, not compute-bound**: we could afford more scoring time, but the 64 MB asset ceiling prevents growing either the neural model or the n-gram tables further.
+The n-gram tables consume ~41 MB of the inference bundle and the neural weights make up most of the remainder. The system is **asset-bound, not compute-bound**: the bundle is close to the 64 MiB limit, leaving limited room to grow either the neural model or the n-gram tables.
 
 ---
 
@@ -125,6 +125,8 @@ Among neural changes, **RoPE** was the most valuable single modification (−0.1
 - Further neural training after the n-gram mixture was fitted (row 7 → 8: −0.001). The neural model had already converged; the remaining error is dominated by tokens that neither the local n-gram nor the small network can predict.
 - Grid search over mixture weights after the initial fit changed BPB by less than 0.002.
 - Depth 8 vs 10 was a wash (0.0002 difference).
+
+The final depth-10 checkpoint reaches validation BPB 1.506880 and test BPB 1.524677. The adaptive-mixture selection used 12 declared validation configurations; its selection process took 70.7 seconds, with a separate original-scorer/resource verification process of 392.4 seconds. Training and search run details, including earlier stages and the paired depth experiment, are recorded in the README and runs audit files.
 
 ### 5.3 Trade-offs
 

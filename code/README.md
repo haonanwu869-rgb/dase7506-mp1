@@ -1,5 +1,9 @@
 # MP1 code — installation and usage
 
+## Final frozen submission
+
+The final checkpoint bundle is runs/final-submission/. It contains the depth-10 hybrid predictor and scored 1.524677 BPB on the full test split with CPU FP32. Its selected validation BPB is 1.506880. The checkpoint SHA256 is 7382455e5313495cd186f6773ad4eba6e313acf89773495650cd6999079129d1; the final test run took 40.108 seconds. Depth-10 preflight measured a maximum working set of 1,801,285,632 bytes (1.68 GiB), below the 4 GiB limit. The bundle is 57.52 MiB including the checkpoint and model code, below the 64 MiB limit. Run from the code directory: python evaluate.py --checkpoint runs/final-submission/checkpoint.pt --split test --device cpu --precision fp32 --threads 3.
+
 ## 2026-09-29 paired depth continuation
 
 An authorized, bounded experiment compares the current 8-layer network with a
@@ -33,9 +37,7 @@ Equal targets do not imply equal compute: the deeper network costs more per step
 Eighteen engineering checks passed before the run. All prior checkpoints,
 data/tokenizer and evaluator remain protected by hashes in `runs/depth_audit/`.
 Actual commands, exit codes and wall times are recorded in `commands.json`;
-training logs are named `train_depth{depth}_step{boundary}.log`. Until the
-experiment outcome is accepted, the established best remains
-`runs/hybrid-adaptive-selected/`, validation BPB **1.508208363922**.
+training logs are named train_depth{depth}_step{boundary}.log. The paired run selected the depth-10 EMA checkpoint at step 1000: validation BPB 1.506879794. The frozen test-scored copy is runs/final-submission/, with test BPB 1.524677172. The adaptive checkpoint below is the starting point for this depth experiment, not the final submission.
 
 ```powershell
 .\.venv\Scripts\python.exe prepare_depth.py
@@ -72,7 +74,7 @@ Original-evaluator resource verification and acceptance are recorded in
 At CPU / FP32 / 3 threads, median scoring time is **56.722 s** versus
 baseline **15.618 s** (**3.632x**), peak working set **1.337 GiB**, and the full
 uncompressed inference bundle **54.134 MiB**. All measured limits pass on the
-full validation set. The accepted best bundle is `runs/hybrid-adaptive-selected/`; the previous
+full validation set. At this adaptive-mixture stage, the selected bundle was `runs/hybrid-adaptive-selected/`; the later paired depth experiment superseded it for final submission. The previous
 `runs/hybrid-selected/` bundle and all historical checkpoints are retained.
 All 112 neural/statistical state tensors are bit-identical to the previous
 model. New neural updates, new training targets and statistics refits are all
