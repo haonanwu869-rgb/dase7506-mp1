@@ -2,6 +2,8 @@
 
 ## Final frozen submission
 
+**Report:** [PDF](REPORT.pdf) | [Markdown source](REPORT.md)
+
 The final checkpoint bundle is runs/final-submission/. It contains the depth-10 hybrid predictor and scored 1.52468 BPB on the full test split with CPU FP32. Its selected validation BPB is 1.506880. The checkpoint SHA256 is 7382455e5313495cd186f6773ad4eba6e313acf89773495650cd6999079129d1; the final test run took 40.108 seconds. Depth-10 preflight measured a maximum working set of 1,801,285,632 bytes (1.68 GiB), below the 4 GiB limit. The bundle is 57.52 MiB including the checkpoint and model code, below the 64 MiB limit. Run from the code directory: python evaluate.py --checkpoint runs/final-submission/checkpoint.pt --split test --device cpu --precision fp32 --threads 3.
 
 ## 2026-09-29 paired depth continuation
