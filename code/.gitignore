@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+
+# Exclude training resume state and intermediate runs, but keep final bundle
+runs/
+!runs/final-submission/
+runs/final-submission/*
+!runs/final-submission/checkpoint.pt
+!runs/final-submission/hybrid.py
+!runs/final-submission/student.py
+!runs/final-submission/README.txt
+!runs/final-submission/test_cpu_fp32.json

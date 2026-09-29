@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Training resume state (large, not needed for evaluation)
+**/training_state.pt
+
+# Intermediate run checkpoints (keep only final-submission bundle)
+runs/*/best_*.pt
+runs/*/last_*.pt
+runs/*/checkpoint.pt
+!runs/final-submission/checkpoint.pt
+
+# Logs
+*.log
